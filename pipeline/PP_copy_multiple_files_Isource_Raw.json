@@ -50,7 +50,7 @@
 					},
 					"activities": [
 						{
-							"name": "Copy data1",
+							"name": "copy_file",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -67,6 +67,7 @@
 									"storeSettings": {
 										"type": "AzureBlobStorageReadSettings",
 										"recursive": true,
+										"wildcardFileName": "*",
 										"enablePartitionDiscovery": false
 									},
 									"formatSettings": {
@@ -110,7 +111,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"target_file_name": {
-											"value": "replace(@item(),'.csv','.parquet')",
+											"value": "@item()",
 											"type": "Expression"
 										}
 									}
