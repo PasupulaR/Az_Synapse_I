@@ -49,7 +49,7 @@
 						"value": "@activity('get_metdata_isource_csv_files').output.childItems",
 						"type": "Expression"
 					},
-					"isSequential": true,
+					"isSequential": false,
 					"activities": [
 						{
 							"name": "Copy_multiple_files",
@@ -70,7 +70,7 @@
 										"type": "AzureBlobStorageReadSettings",
 										"recursive": true,
 										"wildcardFileName": {
-											"value": "@item()",
+											"value": "@item().name",
 											"type": "Expression"
 										},
 										"enablePartitionDiscovery": false
@@ -104,7 +104,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"source_file_name": {
-											"value": "@item()",
+											"value": "@item().name",
 											"type": "Expression"
 										}
 									}
@@ -112,14 +112,8 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "Parquet_isource",
-									"type": "DatasetReference",
-									"parameters": {
-										"target_file_name": {
-											"value": "replace(@item(),'.csv','.parquet')",
-											"type": "Expression"
-										}
-									}
+									"referenceName": "Parquet1",
+									"type": "DatasetReference"
 								}
 							]
 						}
