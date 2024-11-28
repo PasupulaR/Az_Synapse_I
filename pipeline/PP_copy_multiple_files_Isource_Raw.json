@@ -100,14 +100,8 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "isource_csv",
-									"type": "DatasetReference",
-									"parameters": {
-										"source_file_name": {
-											"value": "@item().name",
-											"type": "Expression"
-										}
-									}
+									"referenceName": "DelimitedText3",
+									"type": "DatasetReference"
 								}
 							],
 							"outputs": [
