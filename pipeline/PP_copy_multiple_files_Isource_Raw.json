@@ -44,6 +44,10 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"items": {
+						"value": "@activity('get_metdata_isource_csv_files').output.itemName",
+						"type": "Expression"
+					},
 					"activities": [
 						{
 							"name": "Copy data1",
@@ -106,7 +110,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"target_file_name": {
-											"value": "@item().childItems.name",
+											"value": "replace(@item(),'.csv','.parquet')",
 											"type": "Expression"
 										}
 									}
