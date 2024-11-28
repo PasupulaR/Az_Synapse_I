@@ -20,7 +20,7 @@
 						"type": "DatasetReference"
 					},
 					"fieldList": [
-						"childItems"
+						"itemName"
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
@@ -94,7 +94,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"source_file_name": {
-											"value": "@item().childItems.name",
+											"value": "@item()",
 											"type": "Expression"
 										}
 									}
