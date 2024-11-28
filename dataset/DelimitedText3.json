@@ -1,14 +1,9 @@
 {
-	"name": "isource_csv",
+	"name": "DelimitedText3",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "az_isource_blob",
+			"referenceName": "AzureBlobStorage3",
 			"type": "LinkedServiceReference"
-		},
-		"parameters": {
-			"source_file_name": {
-				"type": "String"
-			}
 		},
 		"annotations": [],
 		"type": "DelimitedText",
@@ -92,6 +87,5 @@
 				"type": "String"
 			}
 		]
-	},
-	"type": "Microsoft.Synapse/workspaces/datasets"
+	}
 }
