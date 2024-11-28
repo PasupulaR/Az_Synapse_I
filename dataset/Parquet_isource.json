@@ -1,0 +1,29 @@
+{
+	"name": "Parquet_isource",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "az_isource_blob",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"target_file_name": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().target_file_name",
+					"type": "Expression"
+				},
+				"container": "raw-dev"
+			},
+			"compressionCodec": "none"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

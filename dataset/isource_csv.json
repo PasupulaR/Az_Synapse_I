@@ -1,0 +1,101 @@
+{
+	"name": "isource_csv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "az_isource_blob",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"source_file_name": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().source_file_name",
+					"type": "Expression"
+				},
+				"container": "isource"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "BusinessEntityID",
+				"type": "String"
+			},
+			{
+				"name": "Title",
+				"type": "String"
+			},
+			{
+				"name": "FirstName",
+				"type": "String"
+			},
+			{
+				"name": "MiddleName",
+				"type": "String"
+			},
+			{
+				"name": "LastName",
+				"type": "String"
+			},
+			{
+				"name": "Suffix",
+				"type": "String"
+			},
+			{
+				"name": "PhoneNumber",
+				"type": "String"
+			},
+			{
+				"name": "PhoneNumberType",
+				"type": "String"
+			},
+			{
+				"name": "EmailAddress",
+				"type": "String"
+			},
+			{
+				"name": "EmailPromotion",
+				"type": "String"
+			},
+			{
+				"name": "AddressType",
+				"type": "String"
+			},
+			{
+				"name": "AddressLine1",
+				"type": "String"
+			},
+			{
+				"name": "AddressLine2",
+				"type": "String"
+			},
+			{
+				"name": "City",
+				"type": "String"
+			},
+			{
+				"name": "StateProvinceName",
+				"type": "String"
+			},
+			{
+				"name": "PostalCode",
+				"type": "String"
+			},
+			{
+				"name": "CountryRegionName",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
