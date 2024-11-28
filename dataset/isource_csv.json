@@ -15,10 +15,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": {
-					"value": "@dataset().source_file_name",
-					"type": "Expression"
-				},
 				"container": "isource"
 			},
 			"columnDelimiter": ",",
