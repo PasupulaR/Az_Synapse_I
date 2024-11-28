@@ -103,7 +103,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"source_file_name": {
-											"value": "@item()",
+											"value": "@item().itemName",
 											"type": "Expression"
 										}
 									}
@@ -115,7 +115,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"target_file_name": {
-											"value": "@item()",
+											"value": "replace(@item().itemName,'.csv','.parquet')",
 											"type": "Expression"
 										}
 									}
