@@ -20,7 +20,7 @@
 						"type": "DatasetReference"
 					},
 					"fieldList": [
-						"itemName"
+						"childItems"
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
@@ -46,7 +46,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('get_metdata_isource_csv_files').output.itemName",
+						"value": "@activity('get_metdata_isource_csv_files').output.childItems",
 						"type": "Expression"
 					},
 					"activities": [
@@ -103,7 +103,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"source_file_name": {
-											"value": "@item().itemName",
+											"value": "@item()",
 											"type": "Expression"
 										}
 									}
@@ -115,7 +115,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"target_file_name": {
-											"value": "replace(@item().itemName,'.csv','.parquet')",
+											"value": "replace(@item(),'.csv','.parquet')",
 											"type": "Expression"
 										}
 									}
