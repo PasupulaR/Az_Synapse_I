@@ -143,6 +143,9 @@
 				"defaultValue": "stage_Product_Category"
 			}
 		},
+		"folder": {
+			"name": "Sales_Project"
+		},
 		"annotations": [],
 		"lastPublishTime": "2024-11-28T19:39:31Z"
 	},
