@@ -28,6 +28,10 @@
 			"metadata": "Secure string for 'connectionString' of 'azdevsynapse-WorkspaceDefaultSqlServer'",
 			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:azdevsynapse.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
 		},
+		"AzureBlobStorage4_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage4'"
+		},
 		"azdevsynapse-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://azdevsynapse.dfs.core.windows.net"
@@ -787,7 +791,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "5428a24a-a7c5-4cb0-b42e-7668f1c7def7"
+						"spark.autotune.trackingId": "6847dd40-bfff-4a16-aeed-54f6a0c6ecd2"
 					}
 				},
 				"metadata": {
@@ -812,15 +816,13 @@
 						"sparkVersion": "3.4",
 						"nodeCount": 10,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": false
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"%run Config/Config_adls.ipynb"
 						],
@@ -874,6 +876,148 @@
 			},
 			"dependsOn": [],
 			"location": "westus"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AzureBlobStorage4')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorage4_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Onetime_load_confirm')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "PoolA",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "1bc7d28f-95fc-4200-9192-42a31d22c82a"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/014ff8fc-ea99-4a9f-b5ec-a71518e2f48c/resourceGroups/Az_Dev/providers/Microsoft.Synapse/workspaces/azdevsynapse/bigDataPools/PoolA",
+						"name": "PoolA",
+						"type": "Spark",
+						"endpoint": "https://azdevsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/PoolA",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.4",
+						"nodeCount": 10,
+						"cores": 4,
+						"memory": 28,
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {
+							"microsoft": {},
+							"collapsed": false
+						},
+						"source": [
+							"from pyspark.sql import SparkSession \n",
+							"from pyspark.sql.types import * \n",
+							"\n",
+							"table_name = '{tablename}'\n",
+							"\n",
+							"confirm_table_name = table_name.replace(\"EXPORT\", \"confirm\")\n",
+							"\n",
+							"blob_account_name = \"isourcedev11282024\"\n",
+							"blob_container_name = \"raw-dev\"\n",
+							"\n",
+							"sc = SparkSession.builder.getOrCreate()\n",
+							"\n",
+							"# mount raw layer \n",
+							"token_library = sc._jvm.com.microsoft.azure.synapse.tokenlibrary.TokenLibrary\n",
+							"blob_sas_token = token_library.getConnectionString(\"az_isource_blob\")\n",
+							"\n",
+							"spark.conf.set(\n",
+							"    'fs.azure.sas.%s.%s.blob.core.windows.net' % (blob_container_name, blob_account_name),\n",
+							"    blob_sas_token)\n",
+							"\n",
+							"# target confirm layer\n",
+							"account_name = 'azdevsynapse' \n",
+							"container_name = 'confirm'  \n",
+							"\n",
+							"adls_path = 'abfss://%s@%s.dfs.core.windows.net/' % (container_name, account_name) \n",
+							"print('Primary storage account path: ' + adls_path) \n",
+							"\n",
+							"wasb_path = 'wasbs://raw-dev@isourcedev11282024.blob.core.windows.net/%s' % (table_name)\n",
+							"\n",
+							"    \n",
+							"data = spark.read.load(wasb_path, format='parquet') \n",
+							"\n",
+							"\n",
+							"# Write spark dataframe as a parquet file \n",
+							"parquet_path = adls_path + confirm_table_name\n",
+							"data.write.parquet(parquet_path, mode = 'overwrite') \n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 10
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
 		}
 	]
 }
