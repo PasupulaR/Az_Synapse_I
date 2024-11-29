@@ -3,6 +3,10 @@
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "PoolA",
+			"type": "BigDataPoolReference"
+		},
 		"sessionProperties": {
 			"driverMemory": "28g",
 			"driverCores": 4,
@@ -13,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "4fb0ca83-4c95-4dd8-be26-06a91d725dc1"
+				"spark.autotune.trackingId": "ca1f62fb-9b94-4f98-b426-54b45bdf8320"
 			}
 		},
 		"metadata": {
@@ -21,10 +25,25 @@
 			"enableDebugMode": false,
 			"kernelspec": {
 				"name": "synapse_pyspark",
-				"display_name": "python"
+				"display_name": "Synapse PySpark"
 			},
 			"language_info": {
 				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/014ff8fc-ea99-4a9f-b5ec-a71518e2f48c/resourceGroups/Az_Dev/providers/Microsoft.Synapse/workspaces/azdevsynapse/bigDataPools/PoolA",
+				"name": "PoolA",
+				"type": "Spark",
+				"endpoint": "https://azdevsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/PoolA",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.4",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
 			},
 			"sessionKeepAliveTimeout": 30
 		},
@@ -32,10 +51,9 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"%run\r\n",
-					"Config/Config_adls.ipynb"
+					"%run Config/Config_adls.ipynb"
 				],
-				"execution_count": null
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -51,7 +69,7 @@
 					}
 				},
 				"source": [
-					""
+					"print(isource_account_name)"
 				],
 				"execution_count": null
 			}
