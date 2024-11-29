@@ -15,10 +15,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebook": {
-						"referenceName": "Onetime_load_confirm",
-						"type": "NotebookReference"
-					},
 					"parameters": {
 						"table_name": {
 							"value": {
