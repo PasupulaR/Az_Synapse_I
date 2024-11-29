@@ -228,7 +228,7 @@
 				"parameters": {
 					"table_name": {
 						"type": "string",
-						"defaultValue": "EXPORT_PRODUCT_INFO.parquet"
+						"defaultValue": "EXPORT_Sales_Person.parquet"
 					}
 				},
 				"folder": {
