@@ -44,7 +44,7 @@
 		"parameters": {
 			"table_name": {
 				"type": "string",
-				"defaultValue": "EXPORT_Sales_Order.parquet"
+				"defaultValue": "EXPORT_Sales_Person.parquet"
 			}
 		},
 		"folder": {
