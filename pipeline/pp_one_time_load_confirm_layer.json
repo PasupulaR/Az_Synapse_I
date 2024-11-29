@@ -45,7 +45,7 @@
 			}
 		],
 		"parameters": {
-			"tablename": {
+			"table_name": {
 				"type": "string",
 				"defaultValue": "EXPORT_Product_Category.parquet"
 			}
