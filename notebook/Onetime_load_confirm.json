@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "5f826522-0486-4198-9a37-76c2b3c8045b"
+				"spark.autotune.trackingId": "4a9474f1-e0ef-469c-8982-cfab61a003e6"
 			}
 		},
 		"metadata": {
@@ -65,7 +65,7 @@
 					"\n",
 					"sc = SparkSession.builder.getOrCreate()\n",
 					"\n",
-					"# mount raw layer \n",
+					"#raw\n",
 					"token_library = sc._jvm.com.microsoft.azure.synapse.tokenlibrary.TokenLibrary\n",
 					"blob_sas_token = token_library.getConnectionString(\"az_isource_blob\")\n",
 					"\n",
@@ -73,7 +73,7 @@
 					"    'fs.azure.sas.%s.%s.blob.core.windows.net' % (blob_container_name, blob_account_name),\n",
 					"    blob_sas_token)\n",
 					"\n",
-					"# target confirm layer\n",
+					"#confirm\n",
 					"account_name = 'azdevsynapse' \n",
 					"container_name = 'confirm'  \n",
 					"\n",
@@ -86,7 +86,6 @@
 					"data = spark.read.load(wasb_path, format='parquet') \n",
 					"\n",
 					"\n",
-					"# Write spark dataframe as a parquet file \n",
 					"parquet_path = adls_path + confirm_table_name\n",
 					"data.write.parquet(parquet_path, mode = 'overwrite') \n",
 					""
