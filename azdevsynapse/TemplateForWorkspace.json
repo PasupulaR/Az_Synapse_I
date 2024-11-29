@@ -786,7 +786,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "d500ff36-d913-47e1-96c0-653c283ad9c3"
+						"spark.autotune.trackingId": "b5583ba4-bee2-4bf0-b7da-bbe2831f3fd5"
 					}
 				},
 				"metadata": {
@@ -825,7 +825,7 @@
 							"Mount_data_lakes"
 						],
 						"outputs": [],
-						"execution_count": 5
+						"execution_count": 4
 					},
 					{
 						"cell_type": "code",
