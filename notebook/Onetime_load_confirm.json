@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "010dec89-a6ba-415c-815c-5bc0ee28220f"
+				"spark.autotune.trackingId": "3c930383-d3de-4bf7-886f-0a466aa3999c"
 			}
 		},
 		"metadata": {
@@ -57,7 +57,7 @@
 					"from pyspark.sql import SparkSession \n",
 					"from pyspark.sql.types import * \n",
 					"\n",
-					"table_name = 'EXPORT_CUSTOMER_INFO.parquet'\n",
+					"table_name = '{tablename}'\n",
 					"\n",
 					"confirm_table_name = table_name.replace(\"EXPORT\", \"confirm\")\n",
 					"\n",
