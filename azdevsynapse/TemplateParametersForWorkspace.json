@@ -14,14 +14,14 @@
 		"AzureBlobStorage3_connectionString": {
 			"value": ""
 		},
+		"AzureBlobStorage4_connectionString": {
+			"value": ""
+		},
 		"az_isource_blob_connectionString": {
 			"value": ""
 		},
 		"azdevsynapse-WorkspaceDefaultSqlServer_connectionString": {
 			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:azdevsynapse.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
-		},
-		"AzureBlobStorage4_connectionString": {
-			"value": ""
 		},
 		"azdevsynapse-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://azdevsynapse.dfs.core.windows.net"
