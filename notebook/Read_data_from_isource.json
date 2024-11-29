@@ -1,8 +1,12 @@
 {
-	"name": "Notebook 1",
+	"name": "Read_data_from_isource",
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "SparkPoolA",
+			"type": "BigDataPoolReference"
+		},
 		"sessionProperties": {
 			"driverMemory": "28g",
 			"driverCores": 4,
@@ -13,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "62cac2b3-e3a1-4064-882f-1a70648e7250"
+				"spark.autotune.trackingId": "928f1f18-1ffb-4462-95f6-9b24b14d57aa"
 			}
 		},
 		"metadata": {
@@ -21,10 +25,25 @@
 			"enableDebugMode": false,
 			"kernelspec": {
 				"name": "synapse_pyspark",
-				"display_name": "python"
+				"display_name": "Synapse PySpark"
 			},
 			"language_info": {
 				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/014ff8fc-ea99-4a9f-b5ec-a71518e2f48c/resourceGroups/Az_Dev/providers/Microsoft.Synapse/workspaces/azdevsynapse/bigDataPools/SparkPoolA",
+				"name": "SparkPoolA",
+				"type": "Spark",
+				"endpoint": "https://azdevsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/SparkPoolA",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.4",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
 			},
 			"sessionKeepAliveTimeout": 30
 		},
@@ -33,10 +52,9 @@
 				"cell_type": "code",
 				"source": [
 					"%run\r\n",
-					"https://web.azuresynapse.net/authoring/analyze/notebooks/Mount_data_lakes?workspace=%2Fsubscriptions%2F014ff8fc-ea99-4a9f-b5ec-a71518e2f48c%2FresourceGroups%2FAz_Dev%2Fproviders%2FMicrosoft.Synapse%2Fworkspaces%2Fazdevsynapse\r\n",
-					""
+					"Mount_data_lakes"
 				],
-				"execution_count": null
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -55,6 +73,51 @@
 					"print(isource_storage_account_name)\r\n",
 					"# Set up the Spark configuration to use the account key for authentication\r\n",
 					"#spark.conf.set(f\"spark.hadoop.fs.azure.account.key.{storage_account_name}.dfs.core.windows.net\", storage_account_key)\r\n",
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Define the file system and path\r\n",
+					"file_system_name = \"<your_file_system_name>\"\r\n",
+					"path = f\"abfss://{file_system_name}@{storage_account_name}.dfs.core.windows.net/\"\r\n",
+					"\r\n",
+					"# Load a sample data file from the Data Lake Gen2 (e.g., CSV file)\r\n",
+					"df = spark.read.format(\"csv\").option(\"header\", \"true\").load(f\"{path}/path/to/your/file.csv\")\r\n",
+					"df.show()\r\n",
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Writing DataFrame to Data Lake Gen2 in Parquet format\r\n",
+					"df.write.format(\"parquet\").mode(\"overwrite\").save(f\"{path}/path/to/output/file.parquet\")\r\n",
 					""
 				],
 				"execution_count": null
