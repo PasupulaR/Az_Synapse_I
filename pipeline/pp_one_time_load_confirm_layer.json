@@ -35,12 +35,9 @@
 					},
 					"executorSize": "Small",
 					"conf": {
-						"spark.dynamicAllocation.enabled": false,
-						"spark.dynamicAllocation.minExecutors": 4,
-						"spark.dynamicAllocation.maxExecutors": 4
+						"spark.dynamicAllocation.enabled": false
 					},
-					"driverSize": "Small",
-					"numExecutors": 4
+					"driverSize": "Small"
 				}
 			}
 		],
