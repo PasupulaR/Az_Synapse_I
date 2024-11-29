@@ -1073,6 +1073,9 @@
 						"defaultValue": "EXPORT_Product_Category.parquet"
 					}
 				},
+				"folder": {
+					"name": "Sales_Project"
+				},
 				"annotations": []
 			},
 			"dependsOn": [
