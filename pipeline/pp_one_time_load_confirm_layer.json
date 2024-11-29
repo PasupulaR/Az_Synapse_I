@@ -20,9 +20,9 @@
 						"type": "NotebookReference"
 					},
 					"parameters": {
-						"tablename": {
+						"table_name": {
 							"value": {
-								"value": "@pipeline().parameters.tablename",
+								"value": "@pipeline().parameters.table_name",
 								"type": "Expression"
 							},
 							"type": "string"
