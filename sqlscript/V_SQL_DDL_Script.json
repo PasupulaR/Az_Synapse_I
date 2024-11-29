@@ -1,0 +1,17 @@
+{
+	"name": "V_SQL_DDL_Script",
+	"properties": {
+		"content": {
+			"query": "create DATABASE Vsqldw\nGO\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
