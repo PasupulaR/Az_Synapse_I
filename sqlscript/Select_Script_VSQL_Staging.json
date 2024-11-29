@@ -1,0 +1,17 @@
+{
+	"name": "Select_Script_VSQL_Staging",
+	"properties": {
+		"content": {
+			"query": "SELECT count(1)  FROM STAGING.Customer;\nSELECT count(1)  FROM STAGING.Product;\nSELECT count(1)  FROM STAGING.Product_Category;\nSELECT count(1)  FROM STAGING.SalesOrder;\nSELECT count(1)  FROM STAGING.SalesOrderDetail;\nSELECT count(1)  FROM STAGING.SalesPerson;\n\nSELECT COUNT(1) FROM dbo.DimCustomer;\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "Vsqldw",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

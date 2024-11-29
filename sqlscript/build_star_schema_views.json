@@ -1,0 +1,17 @@
+{
+	"name": "build_star_schema_views",
+	"properties": {
+		"content": {
+			"query": "CREATE VIEW dbo.DimCustomer AS \nSELECT [BusinessEntityID] AS CustomerID,\n\t[Title] ,\n\t[FirstName] ,\n\t[MiddleName] ,\n\t[LastName] ,\n\t[Suffix] ,\n\t[PhoneNumber] ,\n\t[PhoneNumberType] ,\n\t[EmailAddress] ,\n\t[EmailPromotion] ,\n\t[AddressType] ,\n\t[AddressLine1] ,\n\t[AddressLine2] ,\n\t[City] ,\n\t[StateProvinceName] ,\n\t[PostalCode] ,\n\t[CountryRegionName] \n  FROM STAGING.CUSTOMER\nGO\n\nCREATE VIEW dbo.DimProduct AS\nSELECT P.*, PC.NAME AS PRODUCT_CATEGORY\n  FROM STAGING.PRODUCT P\n  JOIN STAGING.PRODUCT_CATEGORY PC\n    ON P.ProductSubcategoryID = PC.ProductSubcategoryID\n\n\nCREATE VIEW dbo.DimSalesPerson AS\nSELECT *\n  FROM STAGING.SalesPerson\n\nCREATE VIEW dbo.FactSales AS\nSELECT *\n  FROM STAGING.SalesOrder\n\nCREATE VIEW dbo.FactSalesDetail AS\nSELECT sod.SalesOrderDetailId as FactSalesDetailId, so.*, \n       sod.[CarrierTrackingNumber],\n\tsod.[OrderQty],\n\tsod.[ProductID],\n\tsod.[SpecialOfferID],\n\tsod.[UnitPrice],\n\tsod.[UnitPriceDiscount],\n\tsod.[LineTotal]\n  FROM STAGING.SalesOrder so\n  JOIN STAGING.SalesOrderDetail SOd\n    on so.salesorderid = sod.salesorderid\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "Vsqldw",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
