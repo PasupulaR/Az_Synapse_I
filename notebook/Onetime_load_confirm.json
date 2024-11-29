@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "3c930383-d3de-4bf7-886f-0a466aa3999c"
+				"spark.autotune.trackingId": "5f826522-0486-4198-9a37-76c2b3c8045b"
 			}
 		},
 		"metadata": {
@@ -57,7 +57,6 @@
 					"from pyspark.sql import SparkSession \n",
 					"from pyspark.sql.types import * \n",
 					"\n",
-					"table_name = '{tablename}'\n",
 					"\n",
 					"confirm_table_name = table_name.replace(\"EXPORT\", \"confirm\")\n",
 					"\n",
