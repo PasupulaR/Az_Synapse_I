@@ -14,9 +14,6 @@
 		"AzureBlobStorage3_connectionString": {
 			"value": ""
 		},
-		"AzureBlobStorage4_connectionString": {
-			"value": ""
-		},
 		"az_isource_blob_connectionString": {
 			"value": ""
 		},
