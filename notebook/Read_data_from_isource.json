@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "928f1f18-1ffb-4462-95f6-9b24b14d57aa"
+				"spark.autotune.trackingId": "a8c5ca34-72dd-4a97-9bd3-834669a29e03"
 			}
 		},
 		"metadata": {
@@ -54,7 +54,7 @@
 					"%run\r\n",
 					"Mount_data_lakes"
 				],
-				"execution_count": 2
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -75,7 +75,7 @@
 					"#spark.conf.set(f\"spark.hadoop.fs.azure.account.key.{storage_account_name}.dfs.core.windows.net\", storage_account_key)\r\n",
 					""
 				],
-				"execution_count": null
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",

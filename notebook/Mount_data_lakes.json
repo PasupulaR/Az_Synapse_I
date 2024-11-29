@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "2108357f-c7df-441c-95ab-64fe4c5c90ec"
+				"spark.autotune.trackingId": "4a3e92dc-9373-4c57-a5c1-b56269a3cccd"
 			}
 		},
 		"metadata": {
@@ -33,8 +33,8 @@
 				"cell_type": "code",
 				"source": [
 					"# Define your Storage Account Name and Account Key\r\n",
-					"storage_account_name = \"isourcedev11282024\"\r\n",
-					"storage_account_key = \"GN4D76x8dY0d3jliKQLXDPeualpgpRYd5na3HS0rHka8NwbDhaBY0+bUskoA4kRB0mdpR7gStmIr+AStIC2xIA==\"\r\n",
+					"isource_storage_account_name = \"isourcedev11282024\"\r\n",
+					"isource_account_key = \"GN4D76x8dY0d3jliKQLXDPeualpgpRYd5na3HS0rHka8NwbDhaBY0+bUskoA4kRB0mdpR7gStmIr+AStIC2xIA==\"\r\n",
 					"\r\n",
 					""
 				],
