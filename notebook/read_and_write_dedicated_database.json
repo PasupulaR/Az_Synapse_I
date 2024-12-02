@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "87e08022-4c1f-42a4-aa4d-41497c690d91"
+				"spark.autotune.trackingId": "88ec3d20-7d7d-4821-8a97-ba7af5957ab6"
 			}
 		},
 		"metadata": {
@@ -77,7 +77,7 @@
 					"df.show()\r\n",
 					""
 				],
-				"execution_count": 6
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
@@ -94,18 +94,26 @@
 				},
 				"source": [
 					"from pyspark.sql import SparkSession\r\n",
+					"from pyspark.sql.types import StructType, StructField, IntegerType, StringType\r\n",
 					"\r\n",
-					"# Initialize Spark session\r\n",
 					"spark = SparkSession.builder \\\r\n",
-					"    .appName(\"WriteToSynapse\") \\\r\n",
+					"    .appName(\"DefineSchemaExample\") \\\r\n",
 					"    .getOrCreate()\r\n",
 					"\r\n",
-					"# Example DataFrame\r\n",
-					"data = [(1, \"Alice\", \"Jordan\"),\r\n",
-					"        (2, \"Bob\", \"Finn\"),\r\n",
-					"        (3, \"Catherine\", \"Fay\")]\r\n",
-					"columns = [\"id\", \"first_name\", \"Last_Name\"]\r\n",
-					"df = spark.createDataFrame(data, columns)\r\n",
+					"schema = StructType([\r\n",
+					"    StructField(\"id\", IntegerType(), True),\r\n",
+					"    StructField(\"first_name\", StringType(), True),  # Equivalent to varchar(40)\r\n",
+					"    StructField(\"last_name\", StringType(), True)    # Equivalent to varchar(40)\r\n",
+					"])\r\n",
+					"\r\n",
+					"data = [\r\n",
+					"    (1, \"Alice\", \"Jordan\"),\r\n",
+					"    (2, \"Bob\", \"Finn\"),\r\n",
+					"    (3, \"Catherine\", \"Fay\")\r\n",
+					"]\r\n",
+					"\r\n",
+					"# Create the DataFrame with the defined schema\r\n",
+					"df = spark.createDataFrame(data, schema=schema)\r\n",
 					"\r\n",
 					"# JDBC connection details\r\n",
 					"server_name = \"azdevsynapse.sql.azuresynapse.net\"\r\n",
@@ -118,7 +126,7 @@
 					"# Write DataFrame to Synapse Dedicated SQL Pool\r\n",
 					"df.write.format(\"jdbc\").option(\"url\", jdbc_url).option(\"dbtable\", table_name).option(\"user\", username).option(\"password\", password).option(\"driver\", \"com.microsoft.sqlserver.jdbc.SQLServerDriver\").mode(\"append\").save()"
 				],
-				"execution_count": 8
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
@@ -134,9 +142,11 @@
 					}
 				},
 				"source": [
-					""
+					"person_df = spark.read.sqlanalytics(\"DSQLdb.dbo.PERSON\")\r\n",
+					"\r\n",
+					"person_df.show()"
 				],
-				"execution_count": null
+				"execution_count": 10
 			}
 		]
 	}
