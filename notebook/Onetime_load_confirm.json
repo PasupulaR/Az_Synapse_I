@@ -1,0 +1,96 @@
+{
+	"name": "Onetime_load_confirm",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "193de9d7-eb4c-4a37-b09d-c4298fb035a7"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"from pyspark.sql import SparkSession \n",
+					"from pyspark.sql.types import * \n",
+					"\n",
+					"\n",
+					"confirm_table_name = table_name.replace(\"EXPORT\", \"confirm\")\n",
+					"\n",
+					"blob_account_name = \"isourcedev11282024\"\n",
+					"blob_container_name = \"raw-dev\"\n",
+					"\n",
+					"sc = SparkSession.builder.getOrCreate()\n",
+					"\n",
+					"#raw\n",
+					"token_library = sc._jvm.com.microsoft.azure.synapse.tokenlibrary.TokenLibrary\n",
+					"blob_sas_token = token_library.getConnectionString(\"az_isource_blob\")\n",
+					"\n",
+					"spark.conf.set(\n",
+					"    'fs.azure.sas.%s.%s.blob.core.windows.net' % (blob_container_name, blob_account_name),\n",
+					"    blob_sas_token)\n",
+					"\n",
+					"#confirm\n",
+					"account_name = 'azdevsynapse' \n",
+					"container_name = 'confirm'  \n",
+					"\n",
+					"adls_path = 'abfss://%s@%s.dfs.core.windows.net/' % (container_name, account_name) \n",
+					"print('Primary storage account path: ' + adls_path) \n",
+					"\n",
+					"wasb_path = 'wasbs://raw-dev@isourcedev11282024.blob.core.windows.net/%s' % (table_name)\n",
+					"\n",
+					"    \n",
+					"data = spark.read.load(wasb_path, format='parquet') \n",
+					"\n",
+					"\n",
+					"parquet_path = adls_path + confirm_table_name\n",
+					"data.write.parquet(parquet_path, mode = 'overwrite') \n",
+					""
+				],
+				"execution_count": 10
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				],
+				"execution_count": null
+			}
+		]
+	}
+}
