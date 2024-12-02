@@ -1,8 +1,8 @@
 {
-	"name": "SQL script 2",
+	"name": "sql_create_external_file_formats",
 	"properties": {
 		"content": {
-			"query": "IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseDelimitedTextFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseDelimitedTextFormat] \n\tWITH ( FORMAT_TYPE = DELIMITEDTEXT ,\n\t       FORMAT_OPTIONS (\n\t\t\t FIELD_TERMINATOR = ',',\n\t\t\t USE_TYPE_DEFAULT = FALSE\n\t\t\t))\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'confirm_azdevsynapse_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [confirm_azdevsynapse_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://confirm@azdevsynapse.dfs.core.windows.net' \n\t)\nGO\n\nCREATE EXTERNAL TABLE staging.DimDate (\n    DateKey INT,\n    FullDate DATE,\n    Day INT,\n    DayOfWeek INT,\n    DayOfWeekName VARCHAR(20),\n    DayOfYear INT,\n    WeekOfYear INT,\n    Month INT,\n    MonthName VARCHAR(20),\n    Quarter INT,\n    Year INT,\n    IsWeekend BIT,\n    IsHoliday BIT -- Optionally, you can also add a flag for holidays\n\t)\n\tWITH (\n\tLOCATION = 'EXPORT_DateDim.csv',\n\tDATA_SOURCE = [confirm_azdevsynapse_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseDelimitedTextFormat]\n\t)\nGO\n\n\nSELECT TOP 100 * FROM staging.DimDate\nGO\n",
+			"query": "IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseDelimitedTextFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseDelimitedTextFormat] \n\tWITH ( FORMAT_TYPE = DELIMITEDTEXT ,\n\t       FORMAT_OPTIONS (\n\t\t\t FIELD_TERMINATOR = ',',\n\t\t\t USE_TYPE_DEFAULT = FALSE\n\t\t\t))\nGO\n\n\n",
 			"metadata": {
 				"language": "sql"
 			},
