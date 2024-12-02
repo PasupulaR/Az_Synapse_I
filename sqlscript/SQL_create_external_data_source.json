@@ -1,8 +1,8 @@
 {
-	"name": "SQL script 3",
+	"name": "SQL_create_external_data_source",
 	"properties": {
 		"content": {
-			"query": "SELECT * FROM sys.external_data_sources\n\n\nabfss://confirm@azdevsynapse.dfs.core.windows.net\n\n",
+			"query": "IF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'confirm_azdevsynapse_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [confirm_azdevsynapse_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://confirm@azdevsynapse.dfs.core.windows.net' \n\t)\nGO\n\n",
 			"metadata": {
 				"language": "sql"
 			},
