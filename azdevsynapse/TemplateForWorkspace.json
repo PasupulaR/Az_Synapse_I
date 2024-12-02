@@ -3164,6 +3164,175 @@
 				]
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DSQLdb')]",
+			"type": "Microsoft.Synapse/workspaces/sqlPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/read_and_write_dedicated_database')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "D"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "sparkpoola",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "88ec3d20-7d7d-4821-8a97-ba7af5957ab6"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/014ff8fc-ea99-4a9f-b5ec-a71518e2f48c/resourceGroups/Az_Dev/providers/Microsoft.Synapse/workspaces/azdevsynapse/bigDataPools/sparkpoola",
+						"name": "sparkpoola",
+						"type": "Spark",
+						"endpoint": "https://azdevsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpoola",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.4",
+						"nodeCount": 10,
+						"cores": 4,
+						"memory": 28,
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
+							"from pyspark.sql import SparkSession\r\n",
+							"\r\n",
+							"# Initialize Spark session\r\n",
+							"spark = SparkSession.builder \\\r\n",
+							"    .appName(\"ReadFromSynapse\") \\\r\n",
+							"    .getOrCreate()\r\n",
+							"\r\n",
+							"# JDBC connection details\r\n",
+							"server_name = \"azdevsynapse.sql.azuresynapse.net\"\r\n",
+							"database_name = \"DSQLdb\"\r\n",
+							"table_name = \"dbo.Person\"\r\n",
+							"username = \"sqladminuser\"\r\n",
+							"password = \"Hellopassword#\"\r\n",
+							"jdbc_url = f\"jdbc:sqlserver://{server_name}:1433;database={database_name};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.sql.azuresynapse.net;loginTimeout=30;\"\r\n",
+							"\r\n",
+							"\r\n",
+							"# Read data from Synapse Dedicated SQL Pool\r\n",
+							"df = spark.read.format(\"jdbc\").option(\"url\", jdbc_url).option(\"dbtable\", table_name).option(\"user\", username).option(\"password\", password).option(\"driver\", \"com.microsoft.sqlserver.jdbc.SQLServerDriver\").load()\r\n",
+							"\r\n",
+							"# Show the data\r\n",
+							"df.show()\r\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 11
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from pyspark.sql import SparkSession\r\n",
+							"from pyspark.sql.types import StructType, StructField, IntegerType, StringType\r\n",
+							"\r\n",
+							"spark = SparkSession.builder \\\r\n",
+							"    .appName(\"DefineSchemaExample\") \\\r\n",
+							"    .getOrCreate()\r\n",
+							"\r\n",
+							"schema = StructType([\r\n",
+							"    StructField(\"id\", IntegerType(), True),\r\n",
+							"    StructField(\"first_name\", StringType(), True),  # Equivalent to varchar(40)\r\n",
+							"    StructField(\"last_name\", StringType(), True)    # Equivalent to varchar(40)\r\n",
+							"])\r\n",
+							"\r\n",
+							"data = [\r\n",
+							"    (1, \"Alice\", \"Jordan\"),\r\n",
+							"    (2, \"Bob\", \"Finn\"),\r\n",
+							"    (3, \"Catherine\", \"Fay\")\r\n",
+							"]\r\n",
+							"\r\n",
+							"# Create the DataFrame with the defined schema\r\n",
+							"df = spark.createDataFrame(data, schema=schema)\r\n",
+							"\r\n",
+							"# JDBC connection details\r\n",
+							"server_name = \"azdevsynapse.sql.azuresynapse.net\"\r\n",
+							"database_name = \"DSQLdb\"\r\n",
+							"table_name = \"dbo.Person\"\r\n",
+							"username = \"sqladminuser\"\r\n",
+							"password = \"Hellopassword#\"\r\n",
+							"jdbc_url = f\"jdbc:sqlserver://{server_name}:1433;database={database_name};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.sql.azuresynapse.net;loginTimeout=30;\"\r\n",
+							"\r\n",
+							"# Write DataFrame to Synapse Dedicated SQL Pool\r\n",
+							"df.write.format(\"jdbc\").option(\"url\", jdbc_url).option(\"dbtable\", table_name).option(\"user\", username).option(\"password\", password).option(\"driver\", \"com.microsoft.sqlserver.jdbc.SQLServerDriver\").mode(\"append\").save()"
+						],
+						"outputs": [],
+						"execution_count": 9
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"person_df = spark.read.sqlanalytics(\"DSQLdb.dbo.PERSON\")\r\n",
+							"\r\n",
+							"person_df.show()"
+						],
+						"outputs": [],
+						"execution_count": 10
+					}
+				]
+			},
+			"dependsOn": []
 		}
 	]
 }
