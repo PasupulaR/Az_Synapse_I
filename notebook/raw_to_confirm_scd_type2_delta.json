@@ -1,0 +1,135 @@
+{
+	"name": "raw_to_confirm_scd_type2_delta",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sparkpoola",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "73eac29a-fcaf-4696-a995-1d190c5a65b0"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/014ff8fc-ea99-4a9f-b5ec-a71518e2f48c/resourceGroups/Az_Dev/providers/Microsoft.Synapse/workspaces/azdevsynapse/bigDataPools/sparkpoola",
+				"name": "sparkpoola",
+				"type": "Spark",
+				"endpoint": "https://azdevsynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpoola",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.4",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"from pyspark.sql import SparkSession\r\n",
+					"from pyspark.sql.functions import col, lit, current_timestamp, when\r\n",
+					"from delta.tables import DeltaTable\r\n",
+					"\r\n",
+					"spark = SparkSession.builder \\\r\n",
+					"    .appName(\"Raw_to_confirm_scd_type2\") \\\r\n",
+					"    .config(\"spark.sql.extensions\", \"io.delta.sql.DeltaSparkSessionExtension\") \\\r\n",
+					"    .config(\"spark.sql.catalog.spark_catalog\", \"org.apache.spark.sql.delta.catalog.DeltaCatalog\") \\\r\n",
+					"    .getOrCreate()\r\n",
+					"\r\n",
+					"source_path = \"wasbs://raw-dev@isourcedev11282024.blob.core.windows.net/EXPORT_Sales_Person.parquet\"\r\n",
+					"target_path = \"abfss://confirm@azdevsynapse.dfs.core.windows.net/confirm_Sales_Person.delta\"\r\n",
+					"\r\n",
+					"incoming_data = spark.read.parquet(source_path)\r\n",
+					"\r\n",
+					"if DeltaTable.isDeltaTable(spark, target_path):\r\n",
+					"    target_table = DeltaTable.forPath(spark, target_path)\r\n",
+					"    target_data = target_table.toDF()\r\n",
+					"else:\r\n",
+					"    print(\"Target Delta table does not exist, creating new table.\")\r\n",
+					"    target_data = spark.createDataFrame([], incoming_data.schema.add(\"start_date\", \"timestamp\").add(\"end_date\", \"timestamp\").add(\"is_current\", \"boolean\"))\r\n",
+					"\r\n",
+					"incoming_data = incoming_data.withColumn(\"start_date\", current_timestamp()) \\\r\n",
+					"                             .withColumn(\"end_date\", lit(None).cast(\"timestamp\")) \\\r\n",
+					"                             .withColumn(\"is_current\", lit(True))\r\n",
+					"\r\n",
+					"merged_data = incoming_data.alias(\"src\").join(\r\n",
+					"    target_data.alias(\"tgt\"),\r\n",
+					"    col(\"src.BusinessEntityID\") == col(\"tgt.BusinessEntityID\"),\r\n",
+					"    \"full_outer\"\r\n",
+					")\r\n",
+					"\r\n",
+					"final_data = merged_data.withColumn(\r\n",
+					"    \"action\",\r\n",
+					"    when(col(\"tgt.BusinessEntityID\").isNull(), lit(\"INSERT\"))  # New record\r\n",
+					"    .when(\r\n",
+					"        (col(\"src.PhoneNumber\") != col(\"tgt.PhoneNumber\")) |\r\n",
+					"        (col(\"src.EmailAddress\") != col(\"tgt.EmailAddress\")),\r\n",
+					"        lit(\"UPDATE\")  # Changed record\r\n",
+					"    ).otherwise(lit(\"NO_ACTION\"))  # No change\r\n",
+					")\r\n",
+					"\r\n",
+					"expired_records = final_data.filter(col(\"action\") == \"UPDATE\") \\\r\n",
+					"    .select(\r\n",
+					"        col(\"tgt.BusinessEntityID\"),\r\n",
+					"        col(\"tgt.PhoneNumber\"),\r\n",
+					"        col(\"tgt.EmailAddress\"),\r\n",
+					"        col(\"tgt.start_date\"),\r\n",
+					"        current_timestamp().alias(\"end_date\"),\r\n",
+					"        lit(False).alias(\"is_current\")\r\n",
+					"    )\r\n",
+					"\r\n",
+					"new_records = final_data.filter(col(\"action\").isin(\"INSERT\", \"UPDATE\")) \\\r\n",
+					"    .select(\r\n",
+					"        col(\"src.BusinessEntityID\"),\r\n",
+					"        col(\"src.PhoneNumber\"),\r\n",
+					"        col(\"src.EmailAddress\"),\r\n",
+					"        current_timestamp().alias(\"start_date\"),\r\n",
+					"        lit(None).cast(\"timestamp\").alias(\"end_date\"),\r\n",
+					"        lit(True).alias(\"is_current\")\r\n",
+					"    )\r\n",
+					"\r\n",
+					"unchanged_records = final_data.filter(col(\"action\") == \"NO_ACTION\") \\\r\n",
+					"    .select(\r\n",
+					"        col(\"tgt.BusinessEntityID\"),\r\n",
+					"        col(\"tgt.PhoneNumber\"),\r\n",
+					"        col(\"tgt.EmailAddress\"),\r\n",
+					"        col(\"tgt.start_date\"),\r\n",
+					"        col(\"tgt.end_date\"),\r\n",
+					"        col(\"tgt.is_current\")\r\n",
+					"    )\r\n",
+					"\r\n",
+					"final_dim_table = expired_records.union(new_records).union(unchanged_records)\r\n",
+					"\r\n",
+					"final_dim_table.write.format(\"delta\").mode(\"overwrite\").save(target_path)\r\n",
+					""
+				],
+				"execution_count": 1
+			}
+		]
+	}
+}
