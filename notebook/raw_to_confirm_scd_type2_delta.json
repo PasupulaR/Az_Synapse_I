@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "73eac29a-fcaf-4696-a995-1d190c5a65b0"
+				"spark.autotune.trackingId": "8de92750-e737-4df8-9ab5-6872e0fa241e"
 			}
 		},
 		"metadata": {
@@ -60,6 +60,16 @@
 					"    .config(\"spark.sql.extensions\", \"io.delta.sql.DeltaSparkSessionExtension\") \\\r\n",
 					"    .config(\"spark.sql.catalog.spark_catalog\", \"org.apache.spark.sql.delta.catalog.DeltaCatalog\") \\\r\n",
 					"    .getOrCreate()\r\n",
+					"\r\n",
+					"blob_account_name = \"isourcedev11282024\"\r\n",
+					"blob_container_name = \"raw-dev\"\r\n",
+					"\r\n",
+					"token_library = sc._jvm.com.microsoft.azure.synapse.tokenlibrary.TokenLibrary\r\n",
+					"blob_sas_token = token_library.getConnectionString(\"az_isource_blob\")\r\n",
+					"\r\n",
+					"spark.conf.set(\r\n",
+					"    'fs.azure.sas.%s.%s.blob.core.windows.net' % (blob_container_name, blob_account_name),\r\n",
+					"    blob_sas_token)\r\n",
 					"\r\n",
 					"source_path = \"wasbs://raw-dev@isourcedev11282024.blob.core.windows.net/EXPORT_Sales_Person.parquet\"\r\n",
 					"target_path = \"abfss://confirm@azdevsynapse.dfs.core.windows.net/confirm_Sales_Person.delta\"\r\n",
@@ -128,7 +138,7 @@
 					"final_dim_table.write.format(\"delta\").mode(\"overwrite\").save(target_path)\r\n",
 					""
 				],
-				"execution_count": 1
+				"execution_count": 3
 			}
 		]
 	}
