@@ -1,7 +1,7 @@
 {
-	"name": "confirm_Sales_Person",
+	"name": "confirm_Product_Info",
 	"properties": {
-		"Name": "confirm_Sales_Person",
+		"Name": "confirm_Product_Info",
 		"EntityType": "TABLE",
 		"Namespace": {
 			"DatabaseName": "confirm"
@@ -14,19 +14,7 @@
 		"StorageDescriptor": {
 			"Columns": [
 				{
-					"Name": "BusinessEntityID",
-					"OriginDataTypeName": {
-						"TypeName": "integer",
-						"IsComplexType": false,
-						"IsNullable": false,
-						"Properties": {
-							"HIVE_TYPE_STRING": "integer"
-						}
-					},
-					"DeltaFormatInvalidMessages": []
-				},
-				{
-					"Name": "PhoneNumber",
+					"Name": "productID",
 					"OriginDataTypeName": {
 						"TypeName": "string",
 						"IsComplexType": false,
@@ -39,7 +27,20 @@
 					"DeltaFormatInvalidMessages": []
 				},
 				{
-					"Name": "EmailAddress",
+					"Name": "ListPrice",
+					"OriginDataTypeName": {
+						"TypeName": "string",
+						"IsComplexType": false,
+						"IsNullable": true,
+						"Length": 8000,
+						"Properties": {
+							"HIVE_TYPE_STRING": "string"
+						}
+					},
+					"DeltaFormatInvalidMessages": []
+				},
+				{
+					"Name": "Size",
 					"OriginDataTypeName": {
 						"TypeName": "string",
 						"IsComplexType": false,
@@ -96,13 +97,13 @@
 				"FormatType": "parquet",
 				"SerializeLib": "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe",
 				"Properties": {
-					"path": "abfss://confirm@azdevsynapse.dfs.core.windows.net/confirm_Sales_Person.delta",
+					"path": "abfss://confirm@azdevsynapse.dfs.core.windows.net/confirm_Product_Info.delta",
 					"FormatTypeSetToDatabaseDefault": false
 				}
 			},
 			"Source": {
 				"Provider": "ADLS",
-				"Location": "abfss://confirm@azdevsynapse.dfs.core.windows.net/confirm_Sales_Person.delta",
+				"Location": "abfss://confirm@azdevsynapse.dfs.core.windows.net/confirm_Product_Info.delta",
 				"Properties": {
 					"LinkedServiceName": "azdevsynapse-WorkspaceDefaultStorage",
 					"LocationSetToDatabaseDefault": false
@@ -110,7 +111,7 @@
 			},
 			"Properties": {
 				"textinputformat.record.delimiter": ",",
-				"compression": "{\"type\":\"None\",\"level\":\"optimal\"}",
+				"compression": "",
 				"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
 			},
 			"Compressed": false,
@@ -119,7 +120,7 @@
 		"Properties": {
 			"Description": "",
 			"DisplayFolderInfo": "{\"name\":\"Others\",\"colorCode\":\"\"}",
-			"PrimaryKeys": "BusinessEntityID",
+			"PrimaryKeys": "",
 			"spark.sql.sources.provider": "parquet"
 		},
 		"Retention": 0,
