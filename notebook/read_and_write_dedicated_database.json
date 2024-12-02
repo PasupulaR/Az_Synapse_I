@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "88ec3d20-7d7d-4821-8a97-ba7af5957ab6"
+				"spark.autotune.trackingId": "f162b789-6962-4a4a-bf6b-fe9348958207"
 			}
 		},
 		"metadata": {
@@ -56,12 +56,10 @@
 				"source": [
 					"from pyspark.sql import SparkSession\r\n",
 					"\r\n",
-					"# Initialize Spark session\r\n",
 					"spark = SparkSession.builder \\\r\n",
 					"    .appName(\"ReadFromSynapse\") \\\r\n",
 					"    .getOrCreate()\r\n",
 					"\r\n",
-					"# JDBC connection details\r\n",
 					"server_name = \"azdevsynapse.sql.azuresynapse.net\"\r\n",
 					"database_name = \"DSQLdb\"\r\n",
 					"table_name = \"dbo.Person\"\r\n",
@@ -70,7 +68,6 @@
 					"jdbc_url = f\"jdbc:sqlserver://{server_name}:1433;database={database_name};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.sql.azuresynapse.net;loginTimeout=30;\"\r\n",
 					"\r\n",
 					"\r\n",
-					"# Read data from Synapse Dedicated SQL Pool\r\n",
 					"df = spark.read.format(\"jdbc\").option(\"url\", jdbc_url).option(\"dbtable\", table_name).option(\"user\", username).option(\"password\", password).option(\"driver\", \"com.microsoft.sqlserver.jdbc.SQLServerDriver\").load()\r\n",
 					"\r\n",
 					"# Show the data\r\n",
@@ -127,26 +124,6 @@
 					"df.write.format(\"jdbc\").option(\"url\", jdbc_url).option(\"dbtable\", table_name).option(\"user\", username).option(\"password\", password).option(\"driver\", \"com.microsoft.sqlserver.jdbc.SQLServerDriver\").mode(\"append\").save()"
 				],
 				"execution_count": 9
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"person_df = spark.read.sqlanalytics(\"DSQLdb.dbo.PERSON\")\r\n",
-					"\r\n",
-					"person_df.show()"
-				],
-				"execution_count": 10
 			}
 		]
 	}
