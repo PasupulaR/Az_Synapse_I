@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "470a627a-9b40-4bb5-8afb-08b2c3c7b89d"
+				"spark.autotune.trackingId": "0d65576c-1665-47f2-8944-6fd4a2ec9a95"
 			}
 		},
 		"metadata": {
@@ -103,6 +103,54 @@
 					""
 				],
 				"execution_count": 17
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"CREATE TABLE sparkdb1.Sales_Order_delta\r\n",
+					"(\r\n",
+					"    SalesID INT,\r\n",
+					"    ProductName VARCHAR(100),\r\n",
+					"    Quantity INT,\r\n",
+					"    Price DECIMAL(10,2)\r\n",
+					")\r\n",
+					"USING delta"
+				],
+				"execution_count": 19
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"insert into sparkdb1.Sales_Order_delta VALUES(1, 'newproduct1', 100, 12.20)\r\n",
+					"select * from sparkdb1.Sales_Order_delta;\r\n",
+					"update sparkdb1.Sales_Order_delta set Price ='12.30' where SalesID =1 \r\n",
+					"select * from sparkdb1.Sales_Order_delta;\r\n",
+					""
+				],
+				"execution_count": 20
 			}
 		]
 	}
