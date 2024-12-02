@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "0d65576c-1665-47f2-8944-6fd4a2ec9a95"
+				"spark.autotune.trackingId": "57f96f55-2b3f-4fd1-b79b-e4c123dd9a2c"
 			}
 		},
 		"metadata": {
@@ -141,16 +141,17 @@
 						"transient": {
 							"deleting": false
 						}
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
-					"insert into sparkdb1.Sales_Order_delta VALUES(1, 'newproduct1', 100, 12.20)\r\n",
+					"insert into sparkdb1.Sales_Order_delta VALUES(1, 'newproduct1', 100, 12.20);\r\n",
 					"select * from sparkdb1.Sales_Order_delta;\r\n",
-					"update sparkdb1.Sales_Order_delta set Price ='12.30' where SalesID =1 \r\n",
+					"update sparkdb1.Sales_Order_delta set Price ='12.30' where SalesID =1; \r\n",
 					"select * from sparkdb1.Sales_Order_delta;\r\n",
 					""
 				],
-				"execution_count": 20
+				"execution_count": 21
 			}
 		]
 	}
