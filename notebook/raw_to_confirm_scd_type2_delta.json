@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "0e1da4d0-a572-463a-8f48-1709f0c79ad6"
+				"spark.autotune.trackingId": "eafcd941-f123-4807-99b5-1ea62d25d007"
 			}
 		},
 		"metadata": {
@@ -392,19 +392,11 @@
 					"table_name ='EXPORT_Sales_Order'\r\n",
 					"\r\n",
 					"confirm_table_name = table_name.replace(\"EXPORT\", \"confirm\")\r\n",
+					"delta_table_name = confirm_table_name.replace(\"parquet\", \"delta\")\r\n",
 					"\r\n",
-					"blob_account_name = \"isourcedev11282024\"\r\n",
-					"blob_container_name = \"raw-dev\"\r\n",
 					"\r\n",
 					"sc = SparkSession.builder.getOrCreate()\r\n",
 					"\r\n",
-					"#raw\r\n",
-					"token_library = sc._jvm.com.microsoft.azure.synapse.tokenlibrary.TokenLibrary\r\n",
-					"blob_sas_token = token_library.getConnectionString(\"az_isource_blob\")\r\n",
-					"\r\n",
-					"spark.conf.set(\r\n",
-					"    'fs.azure.sas.%s.%s.blob.core.windows.net' % (blob_container_name, blob_account_name),\r\n",
-					"    blob_sas_token)\r\n",
 					"\r\n",
 					"#confirm\r\n",
 					"account_name = 'azdevsynapse' \r\n",
@@ -412,20 +404,16 @@
 					"\r\n",
 					"adls_path = 'abfss://%s@%s.dfs.core.windows.net/' % (container_name, account_name) \r\n",
 					"print('Primary storage account path: ' + adls_path) \r\n",
-					"\r\n",
-					"wasb_path = 'wasbs://raw-dev@isourcedev11282024.blob.core.windows.net/%s' % (table_name)\r\n",
-					"\r\n",
 					"    \r\n",
 					"data = spark.read.load(wasb_path, format='parquet') \r\n",
 					"\r\n",
+					"target_path = adls_path + 'confirm_Product_Info.delta'\r\n",
 					"\r\n",
-					"parquet_path = adls_path + confirm_table_name\r\n",
-					"data.write.parquet(parquet_path, mode = 'overwrite') \r\n",
+					"data.write.format(\"delta\").mode(\"overwrite\").save(target_path)\r\n",
 					"\r\n",
-					"\r\n",
-					"final_dim_table.write.parquet(target_path, mode=\"overwrite\")"
+					""
 				],
-				"execution_count": null
+				"execution_count": 3
 			}
 		]
 	}
