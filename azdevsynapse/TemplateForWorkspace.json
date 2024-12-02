@@ -717,12 +717,12 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/SQL script 2')]",
+			"name": "[concat(parameters('workspaceName'), '/sql_create_external_file_formats')]",
 			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"content": {
-					"query": "IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseDelimitedTextFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseDelimitedTextFormat] \n\tWITH ( FORMAT_TYPE = DELIMITEDTEXT ,\n\t       FORMAT_OPTIONS (\n\t\t\t FIELD_TERMINATOR = ',',\n\t\t\t USE_TYPE_DEFAULT = FALSE\n\t\t\t))\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'confirm_azdevsynapse_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [confirm_azdevsynapse_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://confirm@azdevsynapse.dfs.core.windows.net' \n\t)\nGO\n\nCREATE EXTERNAL TABLE staging.DimDate (\n    DateKey INT,\n    FullDate DATE,\n    Day INT,\n    DayOfWeek INT,\n    DayOfWeekName VARCHAR(20),\n    DayOfYear INT,\n    WeekOfYear INT,\n    Month INT,\n    MonthName VARCHAR(20),\n    Quarter INT,\n    Year INT,\n    IsWeekend BIT,\n    IsHoliday BIT -- Optionally, you can also add a flag for holidays\n\t)\n\tWITH (\n\tLOCATION = 'EXPORT_DateDim.csv',\n\tDATA_SOURCE = [confirm_azdevsynapse_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseDelimitedTextFormat]\n\t)\nGO\n\n\nSELECT TOP 100 * FROM staging.DimDate\nGO\n",
+					"query": "IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseDelimitedTextFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseDelimitedTextFormat] \n\tWITH ( FORMAT_TYPE = DELIMITEDTEXT ,\n\t       FORMAT_OPTIONS (\n\t\t\t FIELD_TERMINATOR = ',',\n\t\t\t USE_TYPE_DEFAULT = FALSE\n\t\t\t))\nGO\n\n\n",
 					"metadata": {
 						"language": "sql"
 					},
@@ -737,32 +737,12 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/SQL script 3')]",
+			"name": "[concat(parameters('workspaceName'), '/SQL_create_external_data_source')]",
 			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"content": {
-					"query": "SELECT * FROM sys.external_data_sources\n\n\nabfss://confirm@azdevsynapse.dfs.core.windows.net\n\n",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "Vsqldw",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
-				},
-				"type": "SqlQuery"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/SQL script 4')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"content": {
-					"query": "SELECT TOP (100) [BusinessEntityID]\n,[Title]\n,[FirstName]\n,[MiddleName]\n,[LastName]\n,[Suffix]\n,[JobTitle]\n,[PhoneNumber]\n,[PhoneNumberType]\n,[EmailAddress]\n,[EmailPromotion]\n,[AddressLine1]\n,[AddressLine2]\n,[City]\n,[StateProvinceName]\n,[PostalCode]\n,[CountryRegionName]\n,[TerritoryName]\n,[TerritoryGroup]\n FROM [STAGING].[SalesPerson]",
+					"query": "IF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'confirm_azdevsynapse_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [confirm_azdevsynapse_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://confirm@azdevsynapse.dfs.core.windows.net' \n\t)\nGO\n\n",
 					"metadata": {
 						"language": "sql"
 					},
@@ -833,51 +813,6 @@
 					"resultLimit": 5000
 				},
 				"type": "SqlQuery"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/Notebook 1')]",
-			"type": "Microsoft.Synapse/workspaces/notebooks",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"nbformat": 4,
-				"nbformat_minor": 2,
-				"sessionProperties": {
-					"driverMemory": "28g",
-					"driverCores": 4,
-					"executorMemory": "28g",
-					"executorCores": 4,
-					"numExecutors": 2,
-					"conf": {
-						"spark.dynamicAllocation.enabled": "false",
-						"spark.dynamicAllocation.minExecutors": "2",
-						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "37456115-11bc-41dd-9af7-64aaddfe4a70"
-					}
-				},
-				"metadata": {
-					"saveOutput": true,
-					"enableDebugMode": false,
-					"kernelspec": {
-						"name": "synapse_pyspark",
-						"display_name": "python"
-					},
-					"language_info": {
-						"name": "python"
-					},
-					"sessionKeepAliveTimeout": 30
-				},
-				"cells": [
-					{
-						"cell_type": "code",
-						"source": [
-							""
-						],
-						"outputs": [],
-						"execution_count": null
-					}
-				]
 			},
 			"dependsOn": []
 		},
@@ -1352,7 +1287,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "a72f9068-6f9b-492e-8ce0-6ccbb63f4e4d"
+						"spark.autotune.trackingId": "fa435a02-7052-457c-b5f9-68f644679841"
 					}
 				},
 				"metadata": {
@@ -3181,6 +3116,54 @@
 			},
 			"dependsOn": [],
 			"location": "westus"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/confirm_run_queries')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "cf291a7b-7b98-49ec-b13f-c910421b4ed9"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "python"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
+							"%%pyspark\n",
+							"df = spark.sql(\"SELECT * FROM `confirm`.`confirm_customer_info`\")\n",
+							"# df.show(10)"
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
 		}
 	]
 }
