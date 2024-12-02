@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "8de92750-e737-4df8-9ab5-6872e0fa241e"
+				"spark.autotune.trackingId": "3a2d7b20-dcfe-460a-a2c5-463e2cd23e96"
 			}
 		},
 		"metadata": {
@@ -139,6 +139,53 @@
 					""
 				],
 				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"CREATE TABLE IF NOT EXISTS confirm.confirm_Sales_Person\r\n",
+					"USING DELTA\r\n",
+					"Location 'abfss://confirm@azdevsynapse.dfs.core.windows.net/confirm_Sales_Person.delta'"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					}
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"spark.sql(f'CREATE TABLE IF NOT EXISTS confirm.confirm_Sales_Person USING DELTA LOCATION \\confirm\\confirm_Sales_Person.delta')"
+				],
+				"execution_count": 5
 			}
 		]
 	}

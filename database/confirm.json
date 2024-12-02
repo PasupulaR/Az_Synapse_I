@@ -1,0 +1,22 @@
+{
+	"name": "confirm",
+	"properties": {
+		"Name": "confirm",
+		"EntityType": "DATABASE",
+		"Origin": {
+			"Type": "SPARK"
+		},
+		"Properties": {
+			"IsSyMSCDMDatabase": true
+		},
+		"Source": {
+			"Provider": "ADLS",
+			"Location": "abfss://azsynapse@azdevsynapse.dfs.core.windows.net/confirm",
+			"Properties": {
+				"FormatType": "parquet",
+				"LinkedServiceName": "azdevsynapse-WorkspaceDefaultStorage"
+			}
+		}
+	},
+	"type": "DATABASE"
+}
